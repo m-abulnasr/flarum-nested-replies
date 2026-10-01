@@ -35,6 +35,7 @@ $extenders = [
         ->default('mtareq-nested-replies.reply_form', 'quick')
         ->default('mtareq-nested-replies.highlight_color', '#00c853')
         ->default('mtareq-nested-replies.legacy_mentions', '0')
+        ->default('mtareq-nested-replies.hide_main_reply_box', '1')
         ->serializeToForum('nestedRepliesEnabled', 'mtareq-nested-replies.enabled', 'boolval')
         ->serializeToForum('nestedRepliesMaxDepth', 'mtareq-nested-replies.max_depth', 'intval')
         ->serializeToForum('nestedRepliesShowVotes', 'mtareq-nested-replies.show_votes', 'boolval')
@@ -46,7 +47,8 @@ $extenders = [
         ->serializeToForum('nestedRepliesShowScrubber', 'mtareq-nested-replies.show_scrubber', 'boolval')
         ->serializeToForum('nestedRepliesReplyForm', 'mtareq-nested-replies.reply_form')
         ->serializeToForum('nestedRepliesHighlightColor', 'mtareq-nested-replies.highlight_color')
-        ->serializeToForum('nestedRepliesLegacyMentions', 'mtareq-nested-replies.legacy_mentions', 'boolval'),
+        ->serializeToForum('nestedRepliesLegacyMentions', 'mtareq-nested-replies.legacy_mentions', 'boolval')
+        ->serializeToForum('nestedRepliesHideMainReplyBox', 'mtareq-nested-replies.hide_main_reply_box', 'boolval'),
 
     // --- Vote authorization --------------------------------------------------
     (new Extend\Policy())

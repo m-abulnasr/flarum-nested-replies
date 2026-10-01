@@ -9,6 +9,7 @@ import DiscussionControls from 'flarum/forum/utils/DiscussionControls';
 import PostControls from 'flarum/forum/utils/PostControls';
 import Composer from 'flarum/forum/components/Composer';
 import PostStream from 'flarum/forum/components/PostStream';
+import ReplyPlaceholder from 'flarum/forum/components/ReplyPlaceholder';
 import DiscussionListItem from 'flarum/forum/components/DiscussionListItem';
 import DiscussionListState from 'flarum/forum/states/DiscussionListState';
 import Stream from 'flarum/common/utils/Stream';
@@ -124,7 +125,8 @@ app.initializers.add('mtareq-nested-replies', () => {
       if (!op) return originalReplyAction.apply(this, args);
 
       openInlineReply(op);
-      return undefined;
+      // Core's ReplyPlaceholder chains .catch() on the result.
+      return Promise.resolve();
     };
   }
 
@@ -760,11 +762,30 @@ app.initializers.add('mtareq-nested-replies', () => {
       const grouped = [];
       if (opItem) grouped.push(m('div.NestedRepliesThreadCard', { key: 'nestedRepliesThreadCard' }, opItem));
 
+      // Core's reply box lives in an extra stream item this tree view never
+      // renders, so draw it ourselves unless the admin hides it: under the
+      // original post and, on threads with replies, again after the last one.
+      // Same condition as core's PostStream: guests get the log-in prompt,
+      // locked threads get nothing. Hidden while an inline reply form is open:
+      // clicking a box would discard the draft, and in composer mode core turns
+      // the box into a second draft preview.
+      const discussion = this.discussion || (this.stream && this.stream.discussion);
+      const replyBox = (key) =>
+        !settings.hideMainReplyBox && !inlineReply && discussion && (!app.session.user || discussion.canReply())
+          ? m('div.PostStream-item', key === 'reply' ? { key, 'data-index': allPosts.length } : { key }, m(ReplyPlaceholder, { discussion }))
+          : null;
+
+      const topBox = replyBox('replyTop');
+      if (topBox) grouped.push(topBox);
+
       // Skip the reply card entirely when there are no replies: the sort header
       // ("Sort by:") must not render on a discussion with no replies. Mirrors
       // the fallback path below.
       if (replyItems.length) {
         grouped.push(m('div.NestedRepliesReplyCard', { key: 'nestedRepliesReplyCard' }, [replySortVNode(), ...replyItems]));
+
+        const bottomBox = replyBox('reply');
+        if (bottomBox) grouped.push(bottomBox);
       }
 
       return m('div.PostStream', vnode.attrs, grouped);
@@ -786,7 +807,8 @@ app.initializers.add('mtareq-nested-replies', () => {
     const op = children[opIndex];
     const rest = children.slice(opIndex + 1);
     const replies = rest.filter(isPostItem);
-    const tail = rest.filter((child) => !isPostItem(child));
+    // Drop core's own reply box (key 'reply') when the admin hides it.
+    const tail = rest.filter((child) => !isPostItem(child) && !(settings.hideMainReplyBox && child && child.key === 'reply'));
 
     const replyPosts = replies.map((child) => lookup(child.attrs['data-id'])).filter(Boolean);
 

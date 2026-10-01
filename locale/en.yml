@@ -15,6 +15,8 @@ mtareq-nested-replies:
       reply_form_composer: Full composer (embedded in card)
       highlight_color_label: New reply highlight color
       legacy_mentions_label: Nest legacy replies from their leading post mention
+      hide_main_reply_box_label: Hide the main reply box
+      hide_main_reply_box_help: When on, replies are written only through each post's Reply button. When off, a "Write a reply" box shows under the original post and after the last reply.
   forum:
     collapse: Collapse replies
     expand: Expand replies

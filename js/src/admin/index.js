@@ -66,5 +66,11 @@ app.initializers.add('mtareq-nested-replies', () => {
       setting: 'mtareq-nested-replies.legacy_mentions',
       type: 'boolean',
       label: app.translator.trans('mtareq-nested-replies.admin.settings.legacy_mentions_label'),
+    })
+    .registerSetting({
+      setting: 'mtareq-nested-replies.hide_main_reply_box',
+      type: 'boolean',
+      label: app.translator.trans('mtareq-nested-replies.admin.settings.hide_main_reply_box_label'),
+      help: app.translator.trans('mtareq-nested-replies.admin.settings.hide_main_reply_box_help'),
     });
 });

@@ -18,6 +18,7 @@ const defaults = {
   replyForm: 'quick',
   highlightColor: '#00c853',
   legacyMentions: false,
+  hideMainReplyBox: true,
 };
 
 describe('readSettings', () => {
@@ -36,6 +37,7 @@ describe('readSettings', () => {
         nestedRepliesReplyForm: 'composer',
         nestedRepliesHighlightColor: '#123456',
         nestedRepliesLegacyMentions: true,
+        nestedRepliesHideMainReplyBox: false,
       })
     );
     expect(settings).toEqual({
@@ -51,6 +53,7 @@ describe('readSettings', () => {
       replyForm: 'composer',
       highlightColor: '#123456',
       legacyMentions: true,
+      hideMainReplyBox: false,
     });
   });
 

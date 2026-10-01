@@ -35,5 +35,6 @@ export function readSettings(app) {
     replyForm: read('nestedRepliesReplyForm', 'quick') === 'composer' ? 'composer' : 'quick',
     highlightColor: String(read('nestedRepliesHighlightColor', '#00c853')),
     legacyMentions: Boolean(read('nestedRepliesLegacyMentions', false)),
+    hideMainReplyBox: Boolean(read('nestedRepliesHideMainReplyBox', true)),
   };
 }
